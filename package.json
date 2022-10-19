@@ -1,0 +1,16 @@
+{
+  "name": "dashboard-chrome-plugin",
+  "version": "1.0.0",
+  "description": "chrome://extensions/ -> Developer mode -> Load unpacked extension -> select the folder",
+  "main": "background.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "node-fetch": "^3.2.10"
+  }
+}

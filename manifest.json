@@ -1,0 +1,25 @@
+{
+  "name": "Dashboard netilion",
+  "description": "Dashboard netilion",
+  "version": "1.0",
+  "manifest_version": 3,
+  "options_page": "options.html",
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": [
+    "storage", "activeTab", "scripting", "tabs"
+  ],
+  "host_permissions": [
+    "*://dashboard.netilion.io/app/dashboard/devops*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "128": "/images/get_started128.png"
+    }
+  },
+  "icons": {
+    "128": "/images/get_started128.png"
+  }
+}
