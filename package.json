@@ -11,6 +11,10 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "node-fetch": "^3.2.10"
+    "date-fns": "^2.29.3",
+    "lodash-es": "^4.17.21",
+    "lowdb": "^4.0.0",
+    "node-fetch": "^3.2.10",
+    "ramda": "^0.28.0"
   }
 }
