@@ -1,6 +1,7 @@
 import { join, dirname } from 'path'
 import { Low, JSONFile } from 'lowdb'
 import { fileURLToPath } from 'url'
+import { keys } from 'ramda'
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -22,8 +23,14 @@ export const getToday = () =>
 export const getDayFrom = (date) =>
   new Date(date).toISOString().split('T')[0]
 
-export const upsertCountsByApp = day => async (countsByApp) => {
-  db.data ||= { prod: {}, stage: {}, countsByApp: {} }
-  db.data.countsByApp ||= {}
-  db.data.countsByApp[day || getToday()] = countsByApp
+export const upsertCountsByApp = (day, env) => async (countsByApp) => {
+  db.data ||= { prod: {}, stage: {}, countsByApp: {
+    prod: {}, stage: {}
+  }}
+  db.data.countsByApp = {
+    prod: {},
+    stage: {},
+    ...db.data.countsByApp,
+  }
+  db.data.countsByApp[env][day || getToday()] = countsByApp
 }
