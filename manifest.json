@@ -11,7 +11,8 @@
     "storage", "activeTab", "scripting", "tabs"
   ],
   "host_permissions": [
-    "*://dashboard.netilion.io/app/dashboard/devops*"
+    "*://dashboard.netilion.io/app/dashboard/devops*",
+    "*://app.logz.io/*"
   ],
   "action": {
     "default_popup": "popup.html",
