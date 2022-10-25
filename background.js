@@ -7,8 +7,28 @@ chrome.runtime.onInstalled.addListener((e) => {
   // chrome.storage.sync.set({ values });
 });
 
-// onCreated
-// onActivated
+const shallICareAboutErrors = (tab) => {
+  const url = window?.location?.href
+
+  if (!/app\.logz\.io/.test(url)) {
+    return
+  }
+
+  const wait = seconds => new Promise(resolve => setTimeout(resolve, seconds * 1000))
+
+  const isStage = /staging/.test(url)
+  const isProd = !isStage
+
+  // setTimeout(async () => {
+  //   // TODO it's not working sometimes.. maybe remove it
+  //   console.debug('scrolling 4000')
+  //   console.debug(document.querySelector('table')?.scrollHeight)
+  //   window.scrollTo(0, document.querySelector("table")?.scrollHeight || 2600)
+  //   await wait(1)
+  // }, 4000)
+
+  console.debug('Logs finished')
+}
 
 const whoNeedsReact = () => {
   console.debug('onActivated url', window?.location?.href)
@@ -102,11 +122,17 @@ const whoNeedsReact = () => {
 chrome.tabs.onActivated.addListener(function(tab) {
   console.debug('onActivated', JSON.stringify(tab), tab.url, tab.tabId, 'info')
 
-    chrome.scripting.executeScript({
-      target: { tabId: tab.tabId },
-      func: whoNeedsReact,
-      args: [],
-    });
+  chrome.scripting.executeScript({
+    target: { tabId: tab.tabId },
+    func: shallICareAboutErrors,
+    args: [],
+  });
+
+  chrome.scripting.executeScript({
+    target: { tabId: tab.tabId },
+    func: whoNeedsReact,
+    args: [],
+  });
 })
 
 const saveErrorsCount = (tab) => chrome.scripting.executeScript({
