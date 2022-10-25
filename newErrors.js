@@ -28,6 +28,8 @@ if (!['prod', 'stage'].includes(process.argv[2]) ) {
 
 const env = process.argv[2] // prod | stage
 
+const errCat = process.argv[3] || 'payments' // SimCards
+
 const recentDays = _(
   prop(env),
   e => {
@@ -153,7 +155,7 @@ _(
     )),
   // tapProp('TODO:DavidErrorWillFix'),
   // tapProp('ActiveRecord::RecordNotFound: ActiveRecord::RecordNotFound'),
-  tapProp('payments'),
+  tapProp(errCat),
   // tapProp('RemoteServiceUnavailable'),
   e => console.log('Returning errors categories', map(length, e)),
 )(todayErr)
