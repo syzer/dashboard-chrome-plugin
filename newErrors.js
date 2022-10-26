@@ -51,7 +51,7 @@ const tapFirst = tap(_(
 
 const tapProp = property => tap(_(
   prop(property),
-  tap(() => console.log(property, ':')),
+  tap(() => console.log(property, ':')), // TODO
   console.log))
 
 console.log('errors to compare on env:', env, recentDays.length, recentDays.find(e => !e.message))
@@ -117,10 +117,8 @@ _(
     })),
   groupBy(msgToCategory),
   tap(_(map(length), console.log)),
-  // console.log
   // tapProp('TODO:DavidErrorWillFix')
-  // tapProp('1 renew failure(s), 0 parse failure(s)'),
-  // tapProp('1 renew failure(s), 0 parse failure(s)'),
+  tapProp(errCat)
 )(todayErr)
 
 // Returning errors
@@ -154,8 +152,6 @@ _(
       // pick(['time', 'message', 'firstSeen', 'path'])
     )),
   // tapProp('TODO:DavidErrorWillFix'),
-  // tapProp('ActiveRecord::RecordNotFound: ActiveRecord::RecordNotFound'),
   tapProp(errCat),
-  // tapProp('RemoteServiceUnavailable'),
   e => console.log('Returning errors categories', map(length, e)),
 )(todayErr)

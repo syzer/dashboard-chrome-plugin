@@ -21,8 +21,9 @@ and service worker console
 - [ ] dotenv
    cookie
 
+- [ ] Add counts to db per day instead uniqBy 
 
 - [ ] add resolutions and links
-- [ ] on logs add button to hide by message(id)
+- [ ] on logs.io add button to hide by message(id)
 
 neural net to categorise should I care and highlight
