@@ -12,12 +12,13 @@ import {
   join,
   head,
   tryCatch,
-  concat, innerJoin, pluck, groupBy, filter, reject, evolve, pick, slice, propOr, __, always,
+  concat, innerJoin, pluck, groupBy, filter, reject, evolve, pick, slice, propOr, __, always, when, find,
 } from 'ramda'
 import { createRequire } from "module";
 import { getToday } from './db.js'
 import { msgToCategory } from './lib/index.js'
 import { formatDistance } from 'date-fns'
+import Keys from 'lodash-es/keys.js'
 
 const require = createRequire(import.meta.url); // construct the require method
 const data = require("./data/db.json") // use the require method
@@ -50,9 +51,15 @@ const tapFirst = tap(_(
 ))
 
 const tapProp = property => tap(_(
-  prop(property),
-  tap(() => console.log(property, ':')), // TODO
-  console.log))
+  // prop(property),
+  e => _(
+    keys,
+    find(prop => prop.includes(property)),
+    found => e[found]
+  )(e),
+  when(Boolean, _(
+    tap(() => console.log(property, ':')),
+    console.log))))
 
 console.log('errors to compare on env:', env, recentDays.length, recentDays.find(e => !e.message))
 

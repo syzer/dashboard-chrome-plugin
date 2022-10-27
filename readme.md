@@ -18,9 +18,10 @@ and service worker console
 - [X] show new messages,
     - [X] and last seen
 
-- [ ] dotenv
+- [X] dotenv
    cookie
 
+- [X] UniqBy Category => uniqBy msg (but lowercase, filter non letters)
 - [ ] Add counts to db per day instead uniqBy 
 
 - [ ] add resolutions and links
