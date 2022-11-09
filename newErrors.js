@@ -99,7 +99,7 @@ const matches = _(
     evolve({ time: e => new Date(e) })
   ))),
   // map(length)
-  filter(e => e.length > 1),
+  filter(e => e.length >= 1),
 )(recentDays)
 
 // console.log(matches)
