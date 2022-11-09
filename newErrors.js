@@ -12,13 +12,12 @@ import {
   join,
   head,
   tryCatch,
-  concat, innerJoin, pluck, groupBy, filter, reject, evolve, pick, slice, propOr, __, always, when, find,
+  concat, innerJoin, pluck, groupBy, filter, reject, evolve, pick, slice, propOr, __, always, when, find, applySpec,
 } from 'ramda'
 import { createRequire } from "module";
 import { getToday } from './db.js'
 import { msgToCategory, sortByKeys } from './lib/index.js'
 import { formatDistance } from 'date-fns'
-import Keys from 'lodash-es/keys.js'
 
 const require = createRequire(import.meta.url); // construct the require method
 const data = require("./data/db.json") // use the require method
@@ -159,5 +158,8 @@ _(
     )),
   sortByKeys,
   tapProp(errCat),
-  e => console.log('Returning errors categories', map(length, e)),
+  e => console.log('Returning errors categories', map(
+    applySpec({
+      length,
+      seen: _(pluck('firstSeen'), head) }), e)),
 )(todayErr)

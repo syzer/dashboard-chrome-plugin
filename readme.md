@@ -8,23 +8,22 @@ also inspect console
 and service worker console
 
 # TODO
-- [X] low db
-- maybe localforage would be a better frontend option?
+- [ ] Add counts to db per day instead uniqBy 
 
-- [X] store every day error 
-- [X] counts and 
+- [ ] add causes and resolutions for errors and links to discussions
+- [ ] on logs.io add button to hide by message(id)
+
+neural net to categorise should I care and highlight
+
+# DONE
+- [X] low db
+- [!] maybe localforage would be a better frontend option?
+- [X] store every day error
+- [X] counts and
 - [X] error messages
 - [X] add staging
 - [X] show new messages,
     - [X] and last seen
-
 - [X] dotenv
-   cookie
-
+  cookie
 - [X] UniqBy Category => uniqBy msg (but lowercase, filter non letters)
-- [ ] Add counts to db per day instead uniqBy 
-
-- [ ] add resolutions and links
-- [ ] on logs.io add button to hide by message(id)
-
-neural net to categorise should I care and highlight
