@@ -16,7 +16,7 @@ import {
 } from 'ramda'
 import { createRequire } from "module";
 import { getToday } from './db.js'
-import { msgToCategory } from './lib/index.js'
+import { msgToCategory, sortByKeys } from './lib/index.js'
 import { formatDistance } from 'date-fns'
 import Keys from 'lodash-es/keys.js'
 
@@ -124,7 +124,6 @@ _(
     })),
   groupBy(msgToCategory),
   tap(_(map(length), console.log)),
-  // tapProp('TODO:DavidErrorWillFix')
   tapProp(errCat)
 )(todayErr)
 
@@ -158,7 +157,7 @@ _(
       }),
       // pick(['time', 'message', 'firstSeen', 'path'])
     )),
-  // tapProp('TODO:DavidErrorWillFix'),
+  sortByKeys,
   tapProp(errCat),
   e => console.log('Returning errors categories', map(length, e)),
 )(todayErr)
