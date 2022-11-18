@@ -1,6 +1,9 @@
 {
   "name": "dashboard-chrome-plugin",
   "version": "1.0.0",
+  "engines": {
+    "node": ">= 18.12.1"
+  },
   "description": "chrome://extensions/ -> Developer mode -> Load unpacked extension -> select the folder",
   "main": "background.js",
   "scripts": {
