@@ -121,6 +121,7 @@ _(
     evolve({
       time: e => new Date(e)
     })),
+  // tap(_(head, msgToCategory, console.log)), // debug uncataloged errors
   groupBy(msgToCategory),
   tap(_(map(length), console.log)),
   tapProp(errCat)
