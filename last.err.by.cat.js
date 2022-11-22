@@ -54,7 +54,8 @@ _(
       includes(message))),
     filter(_(
       msgToCategory,
-      eqBy(toLower, errCat)))
+      // eqBy(toLower, errCat))) // TODO strict or partial match?
+      includes(errCat)))
   ),
   map(evolve({
     time: e => new Date(e)
