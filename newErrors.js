@@ -46,7 +46,8 @@ const recentDays = _(
 
 const tapFirst = tap(_(
   head,
-  e => console.log(e)
+  tap(_(msgToCategory, console.log)),
+  console.log
 ))
 
 const tapProp = property => tap(_(
