@@ -7,9 +7,27 @@ chrome://extensions/ -> Developer mode -> Load unpacked extension -> select the 
 also inspect console
 and service worker console
 
-# TODO
-- [ ] Add counts to db per day instead uniqBy 
+# Usage
+As plugin, works on logs.io
+but need to change back and forth the tab(the first tiem is runned)
 
+## Show new errors
+```bash
+./newErrors.js prod Timeout
+./newErrors.js stage Timeout
+```
+
+
+## To load logs
+```bash
+cd .Trash/
+node load.logs.js stage 2022-11-25
+```
+For some reason its minus day: that means instead 25th it loads 24th
+
+
+# TODO
+- [ ] Add counts to db per day instead uniqBy
 - [ ] add causes and resolutions for errors and links to discussions
 - [ ] on logs.io add button to hide by message(id)
 
