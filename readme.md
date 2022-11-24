@@ -17,6 +17,35 @@ but need to change back and forth the tab(the first tiem is runned)
 ./newErrors.js stage Timeout
 ```
 
+## Show errors that were yeasterday
+node last.err.by.cat.js -e prod -c 'DbBackupFailed'
+```
+Err reported times: 5
+Today theres % chance of that error: 18.51851851851852
+[
+  {
+  app: 'backup',
+  logLevel: 'error',
+  env: 'production',
+  message: 'db backup failed Database backup capture failed twice!!',
+  category: 'ExportDbBackupWorker',
+  time: 2022-10-27T08:19:31.375Z,
+  timeAgo: '28 days ago'
+  },
+  {
+  app: 'backup',
+  logzioSignature: -785292811,
+  logLevel: 'error',
+  env: 'production',
+  message: 'at="error" category="ExportDbBackupWorker" desc="db backup failed Database backup capture failed twice!!"
+  db backup failed Database backup capture failed twice!!',
+  logSize: 645,
+  category: 'ExportDbBackupWorker',
+  time: 2022-11-23T04:18:17.275Z,
+  timeAgo: '1 day ago'
+  }
+]
+```
 
 ## To load logs
 ```bash

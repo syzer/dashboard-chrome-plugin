@@ -1,24 +1,34 @@
 import { parseArgs } from "node:util";
 import {
-  length,
-  prop,
-  values,
-  pipe as _,
-  tap,
-  flatten,
-  map,
-  filter,
   __,
-  always,
-  chain, eqBy, ifElse,
-  includes,
-  toLower, evolve, sortBy, concat, juxt, head, last, descend, assoc
+  always, apply,
+  assoc,
+  chain, clamp,
+  concat,
+  converge,
+  descend,
+  divide,
+  evolve,
+  filter,
+  head,
+  ifElse,
+  includes, isEmpty, isNil,
+  juxt,
+  last,
+  length,
+  map, multiply,
+  pipe as _, pluck,
+  prop,
+  sortBy, subtract,
+  sum,
+  tap, unless,
+  values
 } from 'ramda'
 import { createRequire } from "module";
-import { getToday } from './db.js'
 import { msgToCategory } from './lib/index.js'
-import { format, formatDistance, formatDuration, startOfDay } from 'date-fns'
+import { formatDistance } from 'date-fns'
 
+const average = converge(divide, [sum, length])
 
 const require = createRequire(import.meta.url); // construct the require method
 const data = require("./data/db.json") // use the require method
@@ -67,6 +77,20 @@ _(
     ), e)),
   sortBy(descend(prop('time'))),
   tap(_(length, String, concat('Err reported times: '), console.log)),
+  tap(e =>
+    unless(isEmpty, _(
+      pluck('time'),
+      juxt([last, head]),
+      apply(subtract),
+      divide(__, 1000 * 60 * 60 * 24),
+      Math.ceil,
+      duration => converge(divide, [length, always(duration)])(e),
+      multiply(100),
+      clamp(0, 100), // because same error category can be multiple times a day and would give 100+%
+      String,
+      concat('Today theres % chance of that error: '), // assumes uniform distributions
+      tap(console.log)
+    ))(e)),
   juxt([head, last]),
   tap(console.log)
 )(data)
