@@ -14,7 +14,22 @@ import {
   join,
   head,
   tryCatch,
-  concat, innerJoin, pluck, groupBy, filter, reject, evolve, pick, slice, propOr, __, always, when, find, applySpec,
+  concat,
+  innerJoin,
+  pluck,
+  groupBy,
+  filter,
+  reject,
+  evolve,
+  pick,
+  slice,
+  propOr,
+  __,
+  always,
+  when,
+  find,
+  applySpec,
+  unless, isEmpty,
 } from 'ramda'
 import { createRequire } from "module";
 import { getToday } from './db.js'
@@ -48,8 +63,8 @@ const recentDays = _(
 
 const tapFirst = tap(_(
   head,
-  tap(_(msgToCategory, console.log)),
-  console.log
+  tap(when(Boolean, _(msgToCategory, console.log))),
+  console.log,
 ))
 
 const tapProp = property => tap(_(
