@@ -7,7 +7,7 @@ import {
   concat,
   converge,
   descend,
-  divide,
+  divide, equals,
   evolve,
   filter,
   head,
@@ -18,15 +18,16 @@ import {
   length,
   map, multiply,
   pipe as _, pluck,
-  prop,
-  sortBy, subtract,
+  prop, sort,
+  sortBy, split, subtract,
   sum,
-  tap, unless,
-  values
+  tap, uniq, uniqBy, unless,
+  values, when
 } from 'ramda'
 import { createRequire } from "module";
 import { msgToCategory } from './lib/index.js'
 import { formatDistance } from 'date-fns'
+import Identity from 'lodash-es/identity.js'
 
 const average = converge(divide, [sum, length])
 
@@ -77,22 +78,33 @@ _(
     ), e)),
   sortBy(descend(prop('time'))),
   tap(_(length, String, concat('Err reported times: '), console.log)),
+  uniqBy(_(
+    prop('time'),
+    e => e.toISOString(),
+    split('T'),
+    head)),
+  tap(_(length, String, concat('Err reported days: '), console.log)),
   tap(e =>
     unless(isEmpty, _(
       pluck('time'),
-      juxt([last, head]),
-      apply(subtract),
-      divide(__, 1000 * 60 * 60 * 24),
-      Math.ceil,
-      duration => converge(divide, [length, always(duration)])(e),
-      multiply(100),
-      clamp(0, 100), // because same error category can be multiple times a day and would give 100+%
-      String,
-      concat('Today theres % chance of that error: '), // assumes uniform distributions
-      tap(console.log)
-    ))(e)),
+      sortBy(e => e.getTime()),
+      juxt([always(new Date()), head]),
+      unless(apply(equals), _(
+        apply(subtract),
+        divide(__, 1000 * 60 * 60 * 24),
+        Math.ceil,
+        duration => converge(divide, [length, always(duration)])(e),
+        multiply(100),
+        clamp(0, 100), // because same error category can be multiple times a day and would give 100+%
+        e => e.toFixed(1),
+        concat('Today theres % chance of that error: '), // assumes uniform distributions
+        tap(console.log)
+      ))))(e)),
   juxt([head, last]),
-  tap(console.log)
+  ifElse(
+    apply(equals),
+    tap(_(head, console.log, always('Unicorn! Seen ONCE!!!'), console.log)),
+    tap(console.log)),
 )(data)
 
 // TODO
