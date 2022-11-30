@@ -16,9 +16,9 @@ import {
   juxt,
   last,
   length,
-  map, multiply,
+  map, max, multiply,
   pipe as _, pluck,
-  prop, sort,
+  prop, reduce, sort,
   sortBy, split, subtract,
   sum,
   tap, uniq, uniqBy, unless,
@@ -84,6 +84,7 @@ _(
     split('T'),
     head)),
   tap(_(length, String, concat('Err reported days: '), console.log)),
+  tap(_(pluck('length'), reduce(max, 1), String, concat('Up to times a day: '), console.log)),
   tap(e =>
     unless(isEmpty, _(
       pluck('time'),

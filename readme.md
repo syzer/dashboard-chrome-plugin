@@ -17,11 +17,12 @@ but need to change back and forth the tab(the first tiem is runned)
 ./newErrors.js stage Timeout
 ```
 
-## Show errors that were yeasterday
+## Show errors that were yesterday
 node last.err.by.cat.js -e prod -c 'DbBackupFailed'
 ```
 Err reported times: 5
-Today theres % chance of that error: 18.51851851851852
+Up to times a day: 832
+Today theres % chance of that error: 18.518
 [
   {
   app: 'backup',
@@ -45,6 +46,14 @@ Today theres % chance of that error: 18.51851851851852
   timeAgo: '1 day ago'
   }
 ]
+```
+
+```sh
+nodemon -x 'node last.err.by.cat.js -e stage -m "fastmeasuncon"'
+#Err reported times: 131
+#Err reported days: 34
+#Up to times a day: 832
+#Today theres % chance of that error: 77.3
 ```
 
 ## To load logs
