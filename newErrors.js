@@ -29,12 +29,13 @@ import {
   when,
   find,
   applySpec,
-  unless, isEmpty,
+  unless, isEmpty, identity, take, reduce, sum, add, uniq, pickBy, unapply,
 } from 'ramda'
 import { createRequire } from "module";
 import { getToday } from './db.js'
-import { msgToCategory, sortByKeys } from './lib/index.js'
+import { msgToCategory, pickTruthy, sortByKeys } from './lib/index.js'
 import { formatDistance } from 'date-fns'
+import { evolveResolution } from './lib/resolutions.js'
 
 const require = createRequire(import.meta.url); // construct the require method
 const data = require("./data/db.json") // use the require method
@@ -147,7 +148,6 @@ _(
 
 // Returning errors
 _(
-  // slice(100, 100),
   // filter(e => e.message.includes('CannotConnectError')),
   // tap(_(
   //   head,
@@ -176,9 +176,23 @@ _(
       // pick(['time', 'message', 'firstSeen', 'path'])
     )),
   sortByKeys,
+  map(map(evolveResolution)), // maybe resolution() could work on higher level to have acces to count, or neybour errors?
   tapProp(errCat),
-  e => console.log('Returning errors categories', map(
-    applySpec({
-      length,
-      seen: _(pluck('firstSeen'), head) }), e)),
+  e => console.log('Returning errors categories',
+    map(
+      _(
+        applySpec({
+          totalLength: _(pluck('length'), reduce(add, 0)),
+          resolution: _(pluck('resolution'), uniq, head),
+          length,
+          seen: _(pluck('firstSeen'), head) }),
+        pickTruthy(['length', 'resolution', 'totalLength', 'seen']),
+        f => pickBy((v, k) => {
+          if (k === 'length' && v === 1) return false
+          if (k === 'totalLength' && v === 1) return false
+          if (k !== 'length') return true
+          return k === 'length' && f.totalLength !== f.length
+        }, f))
+      , e)),
+  // tap(_(head, msgToCategory, console.log)), // debug uncataloged errors=
 )(todayErr)
