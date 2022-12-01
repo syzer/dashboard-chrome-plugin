@@ -134,8 +134,7 @@ _(
   //   )),
   reject(e => matches[msgToCategory(e)]),
   tap(_(
-    length, e =>
-    console.log('Uncataloged errors', e))),
+    length, String, concat('Uncatalogued errors: '), console.log)),
   map(
     evolve({
       time: e => new Date(e)
