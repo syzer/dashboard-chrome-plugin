@@ -12,7 +12,7 @@ import {
   filter,
   head,
   ifElse,
-  includes, isEmpty, isNil,
+  includes, isEmpty,
   juxt,
   last,
   length,
@@ -107,17 +107,3 @@ _(
     tap(_(head, console.log, always('Unicorn! Seen ONCE!!!'), console.log)),
     tap(console.log)),
 )(data)
-
-// TODO
-// {
-//   app: 'hub',
-//   env: 'staging',
-//   message: "NoMethodError: undefined method `reseller?' for nil:NilClass",
-//   at: 'error',
-//   stackTrace: "/app/app/models/subscription.rb:166:in `active_users'\n" +
-//   category: 'CleanupUnreadableSubscriptionAssetsWorker',
-//   id: 'DerSg4QB5R1W-CXwfTnB.account-753034',
-//   proc: 'worker.2',
-//   time: 2022-11-17T04:22:00.390Z,
-//   firstSeen: '27 days ago'
-// },
