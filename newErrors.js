@@ -147,7 +147,7 @@ _(
 
 // Returning errors
 _(
-  // filter(e => e.message.includes('CannotConnectError')),
+  // filter(e => e.message.includes('CannotConnectError')), // debug uncataloged errors
   // tap(_(
   //   head,
   //   msgToCategory,
@@ -193,5 +193,5 @@ _(
           return k === 'length' && f.totalLength !== f.length
         }, f))
       , e)),
-  // tap(_(head, msgToCategory, console.log)), // debug uncataloged errors=
+  // tap(_(head, msgToCategory, console.log)), // debug uncataloged errors
 )(todayErr)
