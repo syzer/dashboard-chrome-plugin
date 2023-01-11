@@ -33,7 +33,7 @@ import {
 } from 'ramda'
 import { createRequire } from "module";
 import { getToday } from './db.js'
-import { msgToCategory, pickTruthy, sortByKeys } from './lib/index.js'
+import { addDay, msgToCategory, pickTruthy, sortByKeys } from './lib/index.js'
 import { formatDistance } from 'date-fns'
 import { evolveResolution } from './lib/resolutions.js'
 
@@ -47,12 +47,15 @@ if (!['prod', 'stage'].includes(process.argv[2]) ) {
 const env = process.argv[2] // prod | stage
 
 const errCat = process.argv[3] || 'payments' // SimCards
+const dayDiff = process.argv[4] || 0  // -1 yesterday, 0 today
+const dayGiven = addDay(dayDiff)(getToday())
+console.log('For a day:', dayGiven) // maybe better api would be to actually use date string
 
 const recentDays = _(
   prop(env),
   e => {
     const f = { ...e }
-    delete f[getToday()]
+    delete f[dayGiven]
     return f
   },
   values,
@@ -83,12 +86,12 @@ console.log('errors to compare on env:', env, recentDays.length, recentDays.find
 
 const todayErr = _(
   prop(env),
-  prop(getToday()),
+  prop(dayGiven),
   values)(data)
 
 const newErrors = _(
   prop(env),
-  prop(getToday()),
+  prop(dayGiven),
   values,
   tap(_(
     length,
