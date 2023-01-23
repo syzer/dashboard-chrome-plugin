@@ -98,23 +98,57 @@ const whoNeedsReact = () => {
     styleElement(prod, prodUrl, 'prod')
     styleElement(stage, stageUrl, 'stage')
 
-    // document.querySelectorAll(cards).forEach(e => {
-
     // colors
     const getColor = (errorCount) => {
-      if (errorCount > 150) {
+      if (errorCount > 350) {
         return '#d50c2f'
       }
-      if (errorCount > 100) {
+      if (errorCount > 200) {
         return 'pink'
       }
-      if (errorCount > 10) {
+      if (errorCount > 50) {
         return '#cece27'
       }
       return 'green'
     }
     document.querySelector('div.dashli-row>div:nth-child(1)').style.backgroundColor = getColor(delta.prod)
     document.querySelector('div.dashli-row>div:nth-child(2)').style.backgroundColor = getColor(delta.stage)
+
+    const isDarkTheme = document.querySelector('.theme-dark')
+
+    const getColorForDelay = (delay) => {
+      if (delay > 1500) {
+        return '#d50c2f'
+      }
+      if (delay > 1000) {
+        return 'pink'
+      }
+      if (delay > 500) {
+        return '#cece27'
+      }
+      return '#e6ecf0' // or black theme
+    }
+
+    const theme = color => {
+      if (!isDarkTheme) {
+        return color
+      }
+      return {
+        '#e6ecf0': '#333',
+        '#333': 'white',
+        'black': 'white',
+      }[color] || 'black'
+    }
+
+    Array.from(document.querySelectorAll('li > a.value-list-item-value-link'))
+      .filter(e => e.text.includes('ms'))
+      .forEach(e => {
+        const delay = e.text.split('ms').shift()
+        e.parentElement.style.background = theme(getColorForDelay(delay))
+        e.parentElement.style.backgroundColor = theme(getColorForDelay(delay))
+        e.parentElement.style.color = theme('black') // or white theme
+        // console.debug('delay3', delay, e.parentElement.style)
+      })
   })
   console.debug('ok')
 }
