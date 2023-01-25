@@ -72,6 +72,7 @@ For some reason its minus day: that means instead 25th it loads 24th
 neural net to categorise should I care and highlight
 
 # DONE
+- [X] `npm run backup`
 - [X] low db
 - [!] maybe localforage would be a better frontend option?
 - [X] store every day error
