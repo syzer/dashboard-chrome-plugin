@@ -17,9 +17,14 @@ but need to change back and forth the tab(the first tiem is runned)
 ./newErrors.js stage Timeout
 ```
 
+## Show all errors yesterday
+```bash
+./newErrors.js prod Timeout -1
+```
+
 ## Show errors that were yesterday
 node last.err.by.cat.js -e prod -c 'DbBackupFailed'
-```
+```js
 Err reported times: 5
 Up to times a day: 832
 Today theres % chance of that error: 18.518
