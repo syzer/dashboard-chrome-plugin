@@ -16,7 +16,7 @@ import {
   juxt,
   last,
   length,
-  map, max, multiply,
+  map, mapObjIndexed, max, multiply, omit,
   pipe as _, pluck,
   prop, reduce, sort,
   sortBy, split, subtract,
@@ -25,7 +25,7 @@ import {
   values, when
 } from 'ramda'
 import { createRequire } from "module";
-import { msgToCategory } from './lib/index.js'
+import { foldValues, msgToCategory, omitValues } from './lib/index.js'
 import { formatDistance } from 'date-fns'
 import Identity from 'lodash-es/identity.js'
 
@@ -34,8 +34,9 @@ const average = converge(divide, [sum, length])
 const require = createRequire(import.meta.url); // construct the require method
 const data = require("./data/db.json") // use the require method
 
+
 const {
-  values: { message, env, errCat },
+  values: { message, env, errCat, debug },
 } = parseArgs({
   options: {
     message: {
@@ -50,6 +51,11 @@ const {
     errCat: {
       type: "string",
       short: "c",
+    },
+    debug: {
+      type: "boolean",
+      short: "d",
+      default: false,
     }
   },
 })
@@ -101,6 +107,8 @@ _(
         concat('Today theres % chance of that error: '), // assumes uniform distributions
         tap(console.log)
       ))))(e)),
+  map(omitValues),
+  tap(_(when(always(debug), _(foldValues, tap(console.log))))),
   juxt([head, last]),
   ifElse(
     apply(equals),
