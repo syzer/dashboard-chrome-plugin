@@ -71,12 +71,12 @@ For some reason its minus day: that means instead 25th it loads 24th
 
 # TODO
 - [ ] Add counts to db per day instead uniqBy
-- [ ] add causes and resolutions for errors and links to discussions
 - [ ] on logs.io add button to hide by message(id)
 
 neural net to categorise should I care and highlight
 
 # DONE
+- [X] add causes and resolutions for errors and links to discussions
 - [X] `npm run backup`
 - [X] low db
 - [!] maybe localforage would be a better frontend option?
