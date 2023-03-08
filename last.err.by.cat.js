@@ -7,7 +7,7 @@ import {
   concat,
   converge,
   descend,
-  divide, equals,
+  divide, eqBy, equals,
   evolve,
   filter,
   head,
@@ -18,10 +18,10 @@ import {
   length,
   map, mapObjIndexed, max, multiply, omit,
   pipe as _, pluck,
-  prop, reduce, sort,
+  prop, propOr, reduce, sort,
   sortBy, split, subtract,
   sum,
-  tap, uniq, uniqBy, unless,
+  tap, toLower, uniq, uniqBy, unless,
   values, when
 } from 'ramda'
 import { createRequire } from "module";
