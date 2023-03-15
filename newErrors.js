@@ -33,7 +33,7 @@ import {
 } from 'ramda'
 import { createRequire } from "module";
 import { getToday } from './db.js'
-import { addDay, msgToCategory, pickTruthy, sortByKeys } from './lib/index.js'
+import { addDay, msgToCategory, pickTruthy, sortByKeys, trimStackTrace } from './lib/index.js'
 import { formatDistance } from 'date-fns'
 import { evolveResolution } from './lib/resolutions.js'
 
@@ -140,7 +140,8 @@ _(
     length, String, concat('Uncatalogued errors: '), console.log)),
   map(
     evolve({
-      time: e => new Date(e)
+      time: e => new Date(e),
+      stackTrace: trimStackTrace
     })),
   // tap(_(head, msgToCategory, console.log)), // debug uncataloged errors
   groupBy(msgToCategory),
@@ -161,7 +162,8 @@ _(
   tap(_(length, e => console.log('Cataloged errors', e))),
   map(
     evolve({
-      time: e => new Date(e)
+      time: e => new Date(e),
+      stackTrace: trimStackTrace
     })),
   groupBy(msgToCategory),
   map(
@@ -178,7 +180,7 @@ _(
       // pick(['time', 'message', 'firstSeen', 'path'])
     )),
   sortByKeys,
-  map(map(evolveResolution)), // maybe resolution() could work on higher level to have acces to count, or neybour errors?
+  map(map(evolveResolution)), // maybe resolution() could work on higher level to have access to count, or neybour errors?
   tapProp(errCat),
   e => console.log('Returning errors categories',
     map(
