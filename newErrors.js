@@ -29,11 +29,20 @@ import {
   when,
   find,
   applySpec,
-  unless, isEmpty, identity, take, reduce, sum, add, uniq, pickBy, unapply,
+  unless, isEmpty, identity, take, reduce, sum, add, uniq, pickBy, unapply, clamp, apply, median, takeLast, juxt,
 } from 'ramda'
 import { createRequire } from "module";
 import { getToday } from './db.js'
-import { addDay, msgToCategory, pickTruthy, sortByKeys, trimStackTrace } from './lib/index.js'
+import {
+  addDay,
+  avg,
+  chart,
+  errLengthsByDay, mode,
+  msgToCategory,
+  pickTruthy,
+  sortByKeys,
+  trimStackTrace
+} from './lib/index.js'
 import { formatDistance } from 'date-fns'
 import { evolveResolution } from './lib/resolutions.js'
 
@@ -51,7 +60,7 @@ const dayDiff = process.argv[4] || 0  // -1 yesterday, 0 today
 const dayGiven = addDay(dayDiff)(getToday())
 console.log('For a day:', dayGiven) // maybe better api would be to actually use date string
 
-const recentDays = _(
+const errs = _(
   prop(env),
   e => {
     const f = { ...e }
@@ -82,7 +91,7 @@ const tapProp = property => tap(_(
     tap(() => console.log(property, ':')),
     console.log))))
 
-console.log('errors to compare on env:', env, recentDays.length, recentDays.find(e => !e.message))
+console.log('errors to compare on env:', env, errs.length, errs.find(e => !e.message))
 
 const todayErr = _(
   prop(env),
@@ -96,7 +105,7 @@ const newErrors = _(
   tap(_(
     length,
     errs => console.log('Today errs today so far on ', env, errs))), // erro today
-  concat(recentDays),
+  concat(errs),
 
   uniqBy(msgToCategory), // TODO union unique, or intersect
   // tap(_(e => pluck('message', e), console.log)),
@@ -121,7 +130,17 @@ const matches = _(
   ))),
   // map(length)
   filter(e => e.length >= 1),
-)(recentDays)
+)(errs)
+
+const errCountByDay = _(
+  errLengthsByDay,
+)(errs)
+
+const errVals = _(e => errCountByDay[e], values, takeLast(60), map(clamp(0, 500)))
+const rescale = arr => _(map(e => {
+  const max = median(arr) * 2 + 10
+  return clamp(0, max)(e)
+}))(arr)
 
 // console.log(matches)
 
@@ -175,6 +194,7 @@ _(
           new Date(),
           { addSuffix: true }
         )
+        e.charts = msgToCategory(e)
         return e
       }),
       // pick(['time', 'message', 'firstSeen', 'path'])
@@ -189,8 +209,15 @@ _(
           totalLength: _(pluck('length'), reduce(add, 0)),
           resolution: _(pluck('resolution'), uniq, head),
           length,
-          seen: _(pluck('firstSeen'), head) }),
-        pickTruthy(['length', 'resolution', 'totalLength', 'seen']),
+          seen: _(pluck('firstSeen'), head),
+          charts: _(pluck('charts'), head,  applySpec({
+            maxMedianAvg: _(
+              errVals,
+              juxt([apply(Math.max), median, avg]),
+              join(' | ')),
+            chart: _(errVals, rescale, chart) }))
+        }),
+        e => pickTruthy(keys(e))(e),
         f => pickBy((v, k) => {
           if (k === 'length' && v === 1) return false
           if (k === 'totalLength' && v === 1) return false

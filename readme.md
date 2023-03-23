@@ -6,6 +6,12 @@ chrome://extensions/ -> Developer mode -> Load unpacked extension -> select the 
 
 also inspect console
 and service worker console
+# Install
+```bash
+brew install spark
+npm i 
+nvm use 18 # or higher
+```  
 
 # Usage
 As plugin, works on logs.io
