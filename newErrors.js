@@ -189,12 +189,11 @@ _(
     _(
       map(e => {
         e.firstSeen = formatDistance(
-          // new Date('2020-12-04T15:39:40.000Z'),
           matches[msgToCategory(e)][0].time,
           new Date(),
           { addSuffix: true }
         )
-        e.charts = msgToCategory(e)
+        e.msgCategory = msgToCategory(e)
         return e
       }),
       // pick(['time', 'message', 'firstSeen', 'path'])
@@ -210,13 +209,14 @@ _(
           resolution: _(pluck('resolution'), uniq, head),
           length,
           seen: _(pluck('firstSeen'), head),
-          charts: _(pluck('charts'), head,  applySpec({
-            maxMedianAvg: _(
-              errVals,
-              juxt([apply(Math.max), median, avg]),
-              join(' | ')),
-            chart: _(errVals, rescale, chart) }))
-        }),
+          maxMedianAvg: _(pluck('msgCategory'), head,
+            errVals,
+            juxt([apply(Math.max), median, avg]),
+            join(' | ')),
+          chart: _(pluck('msgCategory'), head,
+            errVals,
+            rescale,
+            chart)}),
         e => pickTruthy(keys(e))(e),
         f => pickBy((v, k) => {
           if (k === 'length' && v === 1) return false
