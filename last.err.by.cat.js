@@ -1,33 +1,33 @@
 import { parseArgs } from "node:util";
 import {
   __,
-  always, apply,
+  always, apply, applySpec,
   assoc,
   chain, clamp,
   concat,
   converge,
   descend,
-  divide, eqBy, equals,
+  divide, equals,
   evolve,
-  filter,
+  filter, groupBy,
   head,
   ifElse,
-  includes, isEmpty,
+  includes, isEmpty, join,
   juxt,
   last,
   length,
-  map, mapObjIndexed, max, multiply, omit,
+  map, max, median, multiply,
   pipe as _, pluck,
-  prop, propOr, reduce, sort,
-  sortBy, split, subtract,
-  sum,
-  tap, toLower, uniq, uniqBy, unless,
+  prop, reduce,
+  sortBy, split, subtract, takeLast,
+  tap, uniqBy, unless,
   values, when
 } from 'ramda'
 import { createRequire } from "module";
-import { foldValues, msgToCategory, omitValues } from './lib/index.js'
+import { errLengthsByDay, sum, foldValues, msgToCategory, omitValues, avg, chart, rescale } from './lib/index.js'
 import { formatDistance } from 'date-fns'
 import Identity from 'lodash-es/identity.js'
+import { getDayFrom } from './db.js'
 
 const average = converge(divide, [sum, length])
 
@@ -89,6 +89,17 @@ _(
     e => e.toISOString(),
     split('T'),
     head)),
+  tap(_(
+    groupBy(_(prop('time'), getDayFrom)),
+    map(_(
+      pluck('length'),
+      reduce(sum, 0),
+      e => e || 1)),
+    values, takeLast(60), map(clamp(0, 500)),
+    applySpec({
+      maxMedAvg: _(juxt([apply(Math.max), median, avg]), join(' | ')),
+      chart: _(rescale, chart)}),
+    console.log)),
   tap(_(length, String, concat('Err reported days: '), console.log)),
   tap(_(pluck('length'), reduce(max, 1), String, concat('Up to times a day: '), console.log)),
   tap(e =>
@@ -105,10 +116,10 @@ _(
         clamp(0, 100), // because same error category can be multiple times a day and would give 100+%
         e => e.toFixed(1),
         concat('Today theres % chance of that error: '), // assumes uniform distributions
-        tap(console.log)
+        console.log
       ))))(e)),
   map(omitValues),
-  tap(_(when(always(debug), _(foldValues, tap(console.log))))),
+  tap(_(when(always(debug), _(foldValues, console.log)))),
   juxt([head, last]),
   ifElse(
     apply(equals),

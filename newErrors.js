@@ -9,11 +9,9 @@ import {
   flatten,
   map,
   keys,
-  count,
   uniqBy,
   join,
   head,
-  tryCatch,
   concat,
   innerJoin,
   pluck,
@@ -22,14 +20,11 @@ import {
   reject,
   evolve,
   pick,
-  slice,
-  propOr,
   __,
-  always,
   when,
   find,
   applySpec,
-  unless, isEmpty, identity, take, reduce, sum, add, uniq, pickBy, unapply, clamp, apply, median, takeLast, juxt,
+  reduce, add, uniq, pickBy, clamp, apply, median, takeLast, juxt,
 } from 'ramda'
 import { createRequire } from "module";
 import { getToday } from './db.js'
@@ -39,7 +34,7 @@ import {
   chart,
   errLengthsByDay, mode,
   msgToCategory,
-  pickTruthy,
+  pickTruthy, rescale,
   sortByKeys,
   trimStackTrace
 } from './lib/index.js'
@@ -137,10 +132,6 @@ const errCountByDay = _(
 )(errs)
 
 const errVals = _(e => errCountByDay[e], values, takeLast(60), map(clamp(0, 500)))
-const rescale = arr => _(map(e => {
-  const max = median(arr) * 2 + 10
-  return clamp(0, max)(e)
-}))(arr)
 
 // console.log(matches)
 
