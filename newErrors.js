@@ -133,8 +133,6 @@ const errCountByDay = _(
 
 const errVals = _(e => errCountByDay[e], values, takeLast(60), map(clamp(0, 500)))
 
-// console.log(matches)
-
 // Uncatagloged errors
 _(
   // slice(100, 100),
@@ -187,34 +185,31 @@ _(
         e.msgCategory = msgToCategory(e)
         return e
       }),
-      // pick(['time', 'message', 'firstSeen', 'path'])
     )),
   sortByKeys,
   map(map(evolveResolution)), // maybe resolution() could work on higher level to have access to count, or neybour errors?
   tapProp(errCat),
-  e => console.log('Returning errors categories',
-    map(
-      _(
-        applySpec({
-          totalLength: _(pluck('length'), reduce(add, 0)),
-          resolution: _(pluck('resolution'), uniq, head),
-          length,
-          seen: _(pluck('firstSeen'), head),
-          maxMedianAvg: _(pluck('msgCategory'), head,
-            errVals,
-            juxt([apply(Math.max), median, avg]),
-            join(' | ')),
-          chart: _(pluck('msgCategory'), head,
-            errVals,
-            rescale,
-            chart)}),
-        e => pickTruthy(keys(e))(e),
-        f => pickBy((v, k) => {
-          if (k === 'length' && v === 1) return false
-          if (k === 'totalLength' && v === 1) return false
-          if (k !== 'length') return true
-          return k === 'length' && f.totalLength !== f.length
-        }, f))
-      , e)),
+  map(_(
+    applySpec({
+      totalLength: _(pluck('length'), reduce(add, 0)),
+      resolution: _(pluck('resolution'), uniq, head),
+      length,
+      seen: _(pluck('firstSeen'), head),
+      maxMedianAvg: _(pluck('msgCategory'), head,
+        errVals,
+        juxt([apply(Math.max), median, avg]),
+        join(' | ')),
+      chart: _(pluck('msgCategory'), head,
+        errVals,
+        rescale,
+        chart)}),
+    e => pickTruthy(keys(e))(e),
+    f => pickBy((v, k) => {
+      if (k === 'length' && v === 1) return false
+      if (k === 'totalLength' && v === 1) return false
+      if (k !== 'length') return true
+      return k === 'length' && f.totalLength !== f.length
+    }, f))),
+    console.log
   // tap(_(head, msgToCategory, console.log)), // debug uncataloged errors
 )(todayErr)
