@@ -24,7 +24,20 @@ import {
   when,
   find,
   applySpec,
-  reduce, add, uniq, pickBy, clamp, apply, median, takeLast, juxt,
+  reduce,
+  add,
+  uniq,
+  pickBy,
+  clamp,
+  apply,
+  median,
+  takeLast,
+  juxt,
+  descend,
+  last,
+  toPairs,
+  fromPairs,
+  propOr, sort, always,
 } from 'ramda'
 import { createRequire } from "module";
 import { getToday } from './db.js'
@@ -54,6 +67,8 @@ const errCat = process.argv[3] || 'payments' // SimCards
 const dayDiff = process.argv[4] || 0  // -1 yesterday, 0 today
 const dayGiven = addDay(dayDiff)(getToday())
 console.log('For a day:', dayGiven) // maybe better api would be to actually use date string
+
+const order = process.argv[5] || true
 
 const errs = _(
   prop(env),
@@ -210,6 +225,11 @@ _(
       if (k !== 'length') return true
       return k === 'length' && f.totalLength !== f.length
     }, f))),
+    when(
+      always(order),
+      _(toPairs,
+        sort(descend(_(last, propOr(0, 'totalLength')))),
+        fromPairs)),
     console.log
   // tap(_(head, msgToCategory, console.log)), // debug uncataloged errors
 )(todayErr)
