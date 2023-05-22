@@ -15,7 +15,7 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "date-fns": "^2.29.3",
+    "date-fns": "^2.30.0",
     "dotenv": "^16.0.3",
     "execa": "^7.1.1",
     "lodash-es": "^4.17.21",
