@@ -56,9 +56,10 @@ import {
 } from './lib/index.js'
 import { formatDistance } from 'date-fns'
 import { evolveResolution } from './lib/resolutions.js'
+import { upsertCountsByApp } from './dbChart.js'
 
 const require = createRequire(import.meta.url); // construct the require method
-const data = require("./data/db.json") // use the require method
+const data = require('./data/db.json') // use the require method
 
 if (!['prod', 'stage'].includes(process.argv[2]) ) {
   throw 'Missing argument prod|stage'
@@ -216,9 +217,6 @@ const recurringErrors = _(
       maxMedianAvg: _(pluck('msgCategory'), head,
         errVals,
         juxt([apply(Math.max), median, avg])),
-      // stats: _(pluck('msgCategory'), head,
-      //   errVals,
-      //   juxt([apply(Math.max), median, avg])),
       chart: _(pluck('msgCategory'), head,
         errVals,
         rescale,
@@ -230,7 +228,6 @@ const recurringErrors = _(
       if (k !== 'length') return true
       return k === 'length' && f.totalLength !== f.length
     }, f))),
-    // _(toPairs, take(3), fromPairs),
     when(
       always(order),
       _(toPairs,
@@ -246,6 +243,7 @@ const recurringErrors = _(
   // tap(_(head, msgToCategory, console.log)), // debug uncataloged errors
 )(todayErr)
 
+// save for nice charts
 _(
-  JSON.stringify,
-  console.log)(recurringErrors)
+  upsertCountsByApp(dayGiven, env)
+)(recurringErrors)
