@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
 import {
+  nth,
+  divide,
   length,
   prop,
   values,
@@ -37,6 +39,7 @@ import {
   last,
   toPairs,
   fromPairs,
+  take,
   propOr, sort, always,
 } from 'ramda'
 import { createRequire } from "module";
@@ -173,7 +176,7 @@ _(
 )(todayErr)
 
 // Returning errors
-_(
+const recurringErrors = _(
   // filter(e => e.message.includes('CannotConnectError')), // debug uncataloged errors
   // tap(_(
   //   head,
@@ -212,8 +215,10 @@ _(
       seen: _(pluck('firstSeen'), head),
       maxMedianAvg: _(pluck('msgCategory'), head,
         errVals,
-        juxt([apply(Math.max), median, avg]),
-        join(' | ')),
+        juxt([apply(Math.max), median, avg])),
+      // stats: _(pluck('msgCategory'), head,
+      //   errVals,
+      //   juxt([apply(Math.max), median, avg])),
       chart: _(pluck('msgCategory'), head,
         errVals,
         rescale,
@@ -225,11 +230,22 @@ _(
       if (k !== 'length') return true
       return k === 'length' && f.totalLength !== f.length
     }, f))),
+    // _(toPairs, take(3), fromPairs),
     when(
       always(order),
       _(toPairs,
-        sort(descend(_(last, propOr(0, 'totalLength')))),
+        sort(
+          descend(_(
+            last,
+            juxt([
+              propOr(1, 'totalLength'),
+              _(prop('maxMedianAvg'), nth(1))]),
+            apply(divide)))),
         fromPairs)),
-    console.log
+    tap(console.log)
   // tap(_(head, msgToCategory, console.log)), // debug uncataloged errors
 )(todayErr)
+
+_(
+  JSON.stringify,
+  console.log)(recurringErrors)
