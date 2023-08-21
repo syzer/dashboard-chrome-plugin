@@ -120,7 +120,6 @@ const newErrors = _(
     length,
     errs => console.log('Today errs today so far on ', env, errs))), // erro today
   concat(errs),
-
   uniqBy(msgToCategory), // TODO union unique, or intersect
   // tap(_(e => pluck('message', e), console.log)),
   allErr => innerJoin(
