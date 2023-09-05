@@ -49,7 +49,7 @@ import {
   avg,
   chart,
   errLengthsByDay, mode,
-  msgToCategory,
+  msgToCategory, parseUA,
   pickTruthy, rescale,
   sortByKeys,
   trimStackTrace
@@ -206,6 +206,9 @@ const recurringErrors = _(
     )),
   sortByKeys,
   map(map(evolveResolution)), // maybe resolution() could work on higher level to have access to count, or neybour errors?
+  map(map(evolve({
+    userAgent: parseUA,
+  }))),
   tapProp(errCat),
   map(_(
     applySpec({

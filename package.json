@@ -22,6 +22,10 @@
     "lowdb": "^4.0.0",
     "natural": "^5.2.3",
     "node-fetch": "^3.3.0",
-    "ramda": "^0.28.0"
+    "ramda": "^0.28.0",
+    "ua-parser-js": "^1.0.35"
+  },
+  "devDependencies": {
+    "html-table-to-json": "^1.0.0"
   }
 }
