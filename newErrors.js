@@ -40,7 +40,7 @@ import {
   toPairs,
   fromPairs,
   take,
-  propOr, sort, always,
+  propOr, sort, always, isEmpty, unless,
 } from 'ramda'
 import { createRequire } from "module";
 import { getToday } from './db.js'
@@ -105,7 +105,7 @@ const tapProp = property => tap(_(
     tap(() => console.log(property, ':')),
     console.log))))
 
-console.log('errors to compare on env:', env, errs.length, errs.find(e => !e.message))
+console.log('Errors to compare on env:', env, errs.length)
 
 const todayErr = _(
   prop(env),
@@ -118,7 +118,8 @@ const newErrors = _(
   values,
   tap(_(
     length,
-    errs => console.log('Today errs today so far on ', env, errs))), // erro today
+    errs => // errors today
+      console.log(`${dayDiff ? dayGiven : 'Today'} errs today so far on`, env, errs))),
   concat(errs),
   uniqBy(msgToCategory), // TODO union unique, or intersect
   // tap(_(e => pluck('message', e), console.log)),
@@ -128,7 +129,7 @@ const newErrors = _(
     todayErr,
     pluck('message', allErr)
   ), // Maybe show each error and match?
-  tapFirst,
+  // tapFirst,
   length,
   // tap(console.log)
 )(data)
@@ -151,7 +152,7 @@ const errCountByDay = _(
 
 const errVals = _(e => errCountByDay[e], values, takeLast(60), map(clamp(0, 500)))
 
-// Uncatagloged errors
+// Uncatalogued errors
 _(
   // slice(100, 100),
   // filter(e => e.message.includes('CannotConnectError')),
@@ -169,15 +170,15 @@ _(
       time: e => new Date(e),
       stackTrace: trimStackTrace
     })),
-  // tap(_(head, msgToCategory, console.log)), // debug uncataloged errors
+  // tap(_(head, msgToCategory, console.log)), // debug uncatalogued errors
   groupBy(msgToCategory),
-  tap(_(map(length), console.log)),
+  tap(_(map(length), unless(isEmpty, console.log))),
   tapProp(errCat)
 )(todayErr)
 
 // Returning errors
 const recurringErrors = _(
-  // filter(e => e.message.includes('CannotConnectError')), // debug uncataloged errors
+  // filter(e => e.message.includes('CannotConnectError')), // debug uncatalogued errors
   // tap(_(
   //   head,
   //   msgToCategory,
@@ -205,7 +206,7 @@ const recurringErrors = _(
       }),
     )),
   sortByKeys,
-  map(map(evolveResolution)), // maybe resolution() could work on higher level to have access to count, or neybour errors?
+  map(map(evolveResolution)), // maybe resolution() could work on higher level to have access to count, or neighbour errors?
   map(map(evolve({
     userAgent: parseUA,
   }))),
@@ -242,7 +243,7 @@ const recurringErrors = _(
             apply(divide)))),
         fromPairs)),
     tap(console.log)
-  // tap(_(head, msgToCategory, console.log)), // debug uncataloged errors
+  // tap(_(head, msgToCategory, console.log)), // debug uncatalogued errors
 )(todayErr)
 
 // save for nice charts
