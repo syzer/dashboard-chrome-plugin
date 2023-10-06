@@ -193,18 +193,14 @@ const recurringErrors = _(
       stackTrace: trimStackTrace
     })),
   groupBy(msgToCategory),
-  map(
-    _(
-      map(e => {
-        e.firstSeen = formatDistance(
-          matches[msgToCategory(e)][0].time,
-          new Date(),
-          { addSuffix: true }
-        )
-        e.msgCategory = msgToCategory(e)
-        return e
-      }),
-    )),
+  map(_(
+    map(e => {
+      e.firstSeen = formatDistance(
+        matches[msgToCategory(e)][0].time,
+        new Date(),
+      { addSuffix: true })
+    e.msgCategory = msgToCategory(e)
+    return e }))),
   sortByKeys,
   map(map(evolveResolution)), // maybe resolution() could work on higher level to have access to count, or neighbour errors?
   map(map(evolve({
