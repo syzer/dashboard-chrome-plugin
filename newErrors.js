@@ -40,7 +40,7 @@ import {
   toPairs,
   fromPairs,
   take,
-  propOr, sort, always, isEmpty, unless,
+  propOr, sort, always, isEmpty, unless, tryCatch, identity
 } from 'ramda'
 import { createRequire } from "module";
 import { getToday } from './db.js'
@@ -189,8 +189,9 @@ const recurringErrors = _(
   tap(_(length, e => console.log('Cataloged errors', e))),
   map(
     evolve({
-      time: e => new Date(e),
-      stackTrace: trimStackTrace
+      path: tryCatch(decodeURIComponent, identity),
+      stackTrace: trimStackTrace,
+      time: e => new Date(e)
     })),
   groupBy(msgToCategory),
   map(_(
